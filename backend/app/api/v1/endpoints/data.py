@@ -1,0 +1,70 @@
+from typing import Optional
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from app.schemas.data_import import UploadedDataResponse
+from app.services.data_import_service import (
+    MAX_FILE_SIZE_BYTES,
+    build_import_summary,
+    read_uploaded_file,
+)
+
+router = APIRouter()
+
+
+@router.post("/upload", response_model=UploadedDataResponse, status_code=status.HTTP_200_OK)
+async def upload_business_data(
+    file: UploadFile = File(...),
+    data_type: Optional[str] = Form(None),
+):
+    """
+    Accepts business CSV/XLSX/XLS files, inspects columns, detects data types,
+    validates rows, and returns data structure summary.
+    """
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Filename cannot be empty."
+        )
+
+    # Security: Sanitize filename representation (do not use as filesystem path)
+    safe_filename = file.filename.replace("\\", "/").split("/")[-1]
+    ext = safe_filename.lower().split(".")[-1]
+
+    if ext not in ["csv", "xlsx", "xls"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file format '.{ext}'. Growz currently supports .csv, .xlsx, and .xls files."
+        )
+
+    try:
+        file_bytes = await file.read()
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to read uploaded file payload: {str(err)}"
+        )
+
+    if len(file_bytes) > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File size exceeds maximum allowed limit of {MAX_FILE_SIZE_BYTES // (1024 * 1024)} MB."
+        )
+
+    try:
+        df = read_uploaded_file(file_bytes, safe_filename)
+        summary = build_import_summary(
+            filename=safe_filename,
+            file_size=len(file_bytes),
+            df=df,
+            provided_data_type=data_type,
+        )
+        return summary
+    except ValueError as val_err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(val_err)
+        )
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred while processing the file: {str(err)}"
+        )
