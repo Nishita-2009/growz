@@ -24,6 +24,12 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
 
   const pStyle = priorityStyles[opportunity.priority];
 
+  const missions = useMissionsStore((state) => state.missions);
+  const activeMission = missions.find((m) => 
+    (m.sourceOpportunityId && m.sourceOpportunityId === opportunity.id) ||
+    (m.title === opportunity.title && m.problem === opportunity.problem)
+  );
+
   const handleTurnIntoMission = (e: React.MouseEvent) => {
     e.stopPropagation();
     const createdMission = turnOpportunityIntoMission(
@@ -31,7 +37,12 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
       opportunity.category,
       opportunity.priority,
       opportunity.problem,
-      opportunity.recommendedAction
+      opportunity.recommendedAction,
+      opportunity.evidence,
+      opportunity.expectedImpact,
+      opportunity.difficulty,
+      opportunity.confidence,
+      opportunity.id
     );
     navigate(`/app/missions/${createdMission.id}`);
   };
@@ -89,15 +100,28 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
         </div>
       </div>
 
-      {/* Footer CTA: Turn into Mission */}
+      {/* Footer CTA: Turn into Mission or View Mission */}
       <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between gap-3">
-        <button
-          onClick={handleTurnIntoMission}
-          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2"
-        >
-          <PlusCircle className="h-4 w-4" />
-          <span>Turn into Mission</span>
-        </button>
+        {activeMission ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/app/missions/${activeMission.id}`);
+            }}
+            className="w-full py-2.5 rounded-xl bg-slate-800 border border-emerald-500/30 text-emerald-400 font-bold text-xs hover:bg-slate-700 transition-all flex items-center justify-center space-x-2"
+          >
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            <span>Mission {activeMission.status === 'Completed' ? 'Completed' : 'Active'} (View)</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleTurnIntoMission}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span>Turn into Mission</span>
+          </button>
+        )}
       </div>
     </div>
   );

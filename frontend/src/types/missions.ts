@@ -50,6 +50,7 @@ export interface Mission {
   checklist: MissionChecklistItem[];
   resultData?: MissionResultData;
   insight: MissionInsight;
+  sourceOpportunityId?: string;
   createdAt: string;
 }
 

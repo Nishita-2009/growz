@@ -1,11 +1,12 @@
-from fastapi import Depends, HTTPException, status
+from typing import Optional
+from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from app.db.session import get_db
 from app.services.firebase import verify_firebase_token
-from app.models.models import User, Organization, UserOrganization, RoleEnum
+from app.models.models import User, Organization, UserOrganization, RoleEnum, Business
 
 security = HTTPBearer()
 
@@ -73,3 +74,48 @@ def get_current_user(
         )
 
     return user
+
+
+DEFAULT_DEV_BUSINESS_NAME = "Development Active Business"
+
+
+def get_current_business(
+    db: Session = Depends(get_db),
+    x_business_id: Optional[str] = Header(None, alias="X-Business-ID")
+) -> Business:
+    """
+    DEVELOPMENT ACTIVE BUSINESS SELECTION MECHANISM:
+
+    1. If `X-Business-ID` header is passed, attempts to find the matching `Business` record.
+    2. If no header is provided or during dev testing, fetches the default development `Business` record or creates one.
+
+    FUTURE COMPATIBILITY:
+    This dependency cleanly isolates business context and can easily be upgraded to resolve
+    `current_user.business` once Firebase tenant auth is wired up.
+    """
+    import uuid
+
+    if x_business_id:
+        try:
+            b_uuid = uuid.UUID(x_business_id)
+            stmt = select(Business).where(Business.id == b_uuid)
+            business = db.execute(stmt).scalar_one_or_none()
+            if business:
+                return business
+        except ValueError:
+            pass
+
+    # Dev fallback: find or create default development business
+    stmt = select(Business).where(Business.name == DEFAULT_DEV_BUSINESS_NAME)
+    business = db.execute(stmt).scalars().first()
+
+    if not business:
+        business = Business(
+            name=DEFAULT_DEV_BUSINESS_NAME,
+            business_type="Retail & MSME Development"
+        )
+        db.add(business)
+        db.commit()
+        db.refresh(business)
+
+    return business

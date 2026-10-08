@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useIntelligenceStore } from '../../stores/useIntelligenceStore';
+import { useIntelligence } from '../../hooks/useIntelligence';
 import { useMissionsStore } from '../../stores/useMissionsStore';
 import { OpportunityCard } from './OpportunityCard';
-import { Opportunity, OpportunityFilterType } from '../../types/intelligence';
+import { OpportunityFilterType } from '../../types/intelligence';
+import { OpportunityItem } from '../../services/intelligenceService';
+import { AnalyticsLoading, AnalyticsError } from '../analytics/AnalyticsStates';
 import { 
   Sparkles, 
   Search, 
@@ -31,16 +33,48 @@ const FILTER_OPTIONS: OpportunityFilterType[] = [
 
 export const OpportunitiesModule: React.FC = () => {
   const navigate = useNavigate();
-  const { opportunities } = useIntelligenceStore();
+  const { intelligence, loading, error, refetch } = useIntelligence();
   const turnOpportunityIntoMission = useMissionsStore((state) => state.turnOpportunityIntoMission);
 
   const [selectedFilter, setSelectedFilter] = useState<OpportunityFilterType>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<any | null>(null);
+
+  if (loading) {
+    return (
+      <div className="p-6 sm:p-8 max-w-7xl mx-auto font-sans">
+        <AnalyticsLoading message="Running Growth Opportunity Diagnostics..." />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 sm:p-8 max-w-7xl mx-auto font-sans">
+        <AnalyticsError message={error} onRetry={refetch} />
+      </div>
+    );
+  }
+
+  const rawOpportunities = intelligence?.opportunities || [];
+
+  // Adapt backend OpportunityItem shape to UI expected shape if needed
+  const opportunities = rawOpportunities.map((opp) => ({
+    id: opp.id,
+    title: opp.title,
+    category: opp.category as any,
+    priority: (opp.priority.charAt(0).toUpperCase() + opp.priority.slice(1)) as any,
+    problem: opp.problem,
+    evidence: opp.evidence,
+    recommendedAction: opp.recommended_action,
+    expectedImpact: opp.expected_impact,
+    difficulty: (opp.difficulty.charAt(0).toUpperCase() + opp.difficulty.slice(1)) as any,
+    confidence: `${Math.round(opp.confidence * 100)}%`,
+    relatedModule: opp.related_module as any
+  }));
 
   // Filter Logic
   const filteredOpportunities = opportunities.filter((opp) => {
-    // 1. Search Query
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const matchesTitle = opp.title.toLowerCase().includes(q);
@@ -49,20 +83,24 @@ export const OpportunitiesModule: React.FC = () => {
       if (!matchesTitle && !matchesProblem && !matchesCategory) return false;
     }
 
-    // 2. Filter Tabs
     if (selectedFilter === 'All') return true;
-    if (selectedFilter === 'High Priority') return opp.priority === 'High';
+    if (selectedFilter === 'High Priority') return opp.priority === 'High' || opp.priority === 'Critical';
 
     return opp.category === selectedFilter;
   });
 
-  const handleTurnIntoMission = (opp: Opportunity) => {
+  const handleTurnIntoMission = (opp: any) => {
     const createdMission = turnOpportunityIntoMission(
       opp.title,
       opp.category,
       opp.priority,
       opp.problem,
-      opp.recommendedAction
+      opp.recommendedAction,
+      opp.evidence,
+      opp.expectedImpact,
+      opp.difficulty,
+      opp.confidence,
+      opp.id
     );
     setSelectedOpportunity(null);
     navigate(`/app/missions/${createdMission.id}`);
@@ -80,8 +118,8 @@ export const OpportunitiesModule: React.FC = () => {
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>Opportunity Detector</span>
               </span>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1 rounded-full">
-                DEMO INTEL
+              <span className="text-[11px] font-extrabold uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
+                POSTGRESQL REAL INTEL
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight pt-1">
@@ -98,6 +136,7 @@ export const OpportunitiesModule: React.FC = () => {
               <div className="text-[10px] font-bold text-slate-500 uppercase">Detection Engine</div>
               <div className="text-xs font-extrabold text-white">{opportunities.length} Levers Identified</div>
             </div>
+
           </div>
         </div>
 

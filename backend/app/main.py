@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.router import api_router
-from app.api.v1.endpoints import data
+from app.api import data, analytics, intelligence, ai
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -22,8 +22,12 @@ app.add_middleware(
 # Include V1 API Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-# Direct route for /api/data/upload as requested
-app.include_router(data.router, prefix="/api/data", tags=["Data Upload"])
+# Register /api/data, /api/analytics, /api/intelligence, and /api/ai router endpoints
+app.include_router(data.router, prefix="/api/data", tags=["Data Processing"])
+app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics Engine"])
+app.include_router(intelligence.router, prefix="/api/intelligence", tags=["Intelligence Engine"])
+app.include_router(ai.router, prefix="/api/ai", tags=["AI Advisor"])
+
 
 @app.get("/")
 def root_redirect():

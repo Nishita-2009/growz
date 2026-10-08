@@ -5,7 +5,8 @@ import {
   MissionResultData, 
   MissionFilterType,
   MissionCategory,
-  MissionPriority
+  MissionPriority,
+  MissionDifficulty
 } from '../types/missions';
 import { INITIAL_DEMO_MISSIONS } from '../data/missionsDemoData';
 
@@ -48,7 +49,12 @@ interface MissionsState {
     category: MissionCategory, 
     priority: MissionPriority, 
     problem: string, 
-    action: string
+    action: string,
+    evidence?: string,
+    expectedImpact?: string,
+    difficulty?: string,
+    confidence?: string,
+    sourceOpportunityId?: string
   ) => Mission;
   resetToDemoData: () => void;
 }
@@ -114,37 +120,79 @@ export const useMissionsStore = create<MissionsState>((set, get) => ({
     set({ missions: updated });
   },
 
-  turnOpportunityIntoMission: (title, category, priority, problem, action) => {
-    const newMissionId = `mission-${Date.now()}`;
+  turnOpportunityIntoMission: (title, category, priority, problem, action, evidence, expectedImpact, difficulty, confidence, sourceOpportunityId) => {
+    const existing = get().missions.find((m) => 
+      (sourceOpportunityId && m.sourceOpportunityId === sourceOpportunityId) ||
+      (m.title === title && m.problem === problem)
+    );
+    if (existing) {
+      return existing;
+    }
+
+    const newMissionId = sourceOpportunityId ? `mission-opp-${sourceOpportunityId}` : `mission-${Date.now()}`;
+    
+    let defaultChecklist = [
+      { id: `task-${Date.now()}-1`, text: 'Identify and analyze current metrics', completed: false },
+      { id: `task-${Date.now()}-2`, text: 'Formulate targeted action plan', completed: false },
+      { id: `task-${Date.now()}-3`, text: 'Execute recommended strategy', completed: false },
+      { id: `task-${Date.now()}-4`, text: 'Review performance and record results', completed: false }
+    ];
+
+    if (category === 'Customers' || category === 'Customer Retention' as any) {
+      defaultChecklist = [
+        { id: `task-${Date.now()}-1`, text: 'Identify top repeat-value customers', completed: false },
+        { id: `task-${Date.now()}-2`, text: 'Create a retention offer', completed: false },
+        { id: `task-${Date.now()}-3`, text: 'Contact selected customers', completed: false },
+        { id: `task-${Date.now()}-4`, text: 'Measure repeat purchases', completed: false }
+      ];
+    } else if (category === 'Revenue') {
+      defaultChecklist = [
+        { id: `task-${Date.now()}-1`, text: 'Identify declining sales area', completed: false },
+        { id: `task-${Date.now()}-2`, text: 'Review top products/customers', completed: false },
+        { id: `task-${Date.now()}-3`, text: 'Create a recovery action', completed: false },
+        { id: `task-${Date.now()}-4`, text: 'Measure revenue change', completed: false }
+      ];
+    } else if (category === 'Marketing') {
+      defaultChecklist = [
+        { id: `task-${Date.now()}-1`, text: 'Identify weak-performing channel', completed: false },
+        { id: `task-${Date.now()}-2`, text: 'Review campaign/message', completed: false },
+        { id: `task-${Date.now()}-3`, text: 'Adjust campaign', completed: false },
+        { id: `task-${Date.now()}-4`, text: 'Measure conversion', completed: false }
+      ];
+    } else if (category === 'Inventory') {
+      defaultChecklist = [
+        { id: `task-${Date.now()}-1`, text: 'Identify affected products', completed: false },
+        { id: `task-${Date.now()}-2`, text: 'Review recent demand', completed: false },
+        { id: `task-${Date.now()}-3`, text: 'Reorder or rebalance stock', completed: false },
+        { id: `task-${Date.now()}-4`, text: 'Measure stock availability', completed: false }
+      ];
+    }
+
     const newMission: Mission = {
       id: newMissionId,
+      sourceOpportunityId: sourceOpportunityId || newMissionId,
       title,
       category,
       priority,
       status: 'Recommended',
       isFeatured: false,
       problem,
-      evidence: `Identified by Growz Opportunity Detector based on recent business metrics.`,
+      evidence: evidence || `Identified by Growz Opportunity Detector based on recent business metrics.`,
       whyItMatters: `Addressing this opportunity could yield immediate efficiency improvements for your business.`,
       aiReasoning: `Automated diagnostic pattern matching indicates high impact potential with minimal operational friction.`,
       recommendedAction: action,
-      expectedImpact: `Potential positive impact on ${category.toLowerCase()} metrics.`,
-      difficulty: 'Medium',
+      expectedImpact: expectedImpact || `Potential positive impact on ${category.toLowerCase()} metrics.`,
+      difficulty: (difficulty as MissionDifficulty) || 'Medium',
       estimatedTime: '5 days',
       createdAt: new Date().toISOString().split('T')[0],
-      checklist: [
-        { id: `task-${Date.now()}-1`, text: 'Define execution parameters & goals', completed: false },
-        { id: `task-${Date.now()}-2`, text: 'Assign resources or schedule tasks', completed: false },
-        { id: `task-${Date.now()}-3`, text: 'Execute recommended action', completed: false },
-        { id: `task-${Date.now()}-4`, text: 'Review performance & record impact', completed: false }
-      ],
+      checklist: defaultChecklist,
       insight: {
         problem,
-        evidence: `Fact: Identified via automated Opportunity Detector rule evaluation.`,
+        evidence: evidence || `Fact: Identified via automated Opportunity Detector rule evaluation.`,
         reasoning: `Recommendation: Executing structured steps yields predictable growth outcomes.`,
         action,
-        expectedImpact: `Estimated positive lift in key revenue driver.`,
-        confidence: 'High'
+        expectedImpact: expectedImpact || `Estimated positive lift in key revenue driver.`,
+        confidence: (confidence as any) || 'High'
       }
     };
 

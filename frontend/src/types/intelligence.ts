@@ -52,12 +52,12 @@ export interface Opportunity {
   priority: OpportunityPriority;
   problem: string;
   evidence: string;
-  reasoning: string;
-  whyItMatters: string;
+  reasoning?: string;
+  whyItMatters?: string;
   recommendedAction: string;
   expectedImpact: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
-  confidence: 'High' | 'Medium' | 'Low';
+  confidence: string;
   relatedModule: string; // Route link, e.g., '/app/customers'
   createdAt?: string;
 }

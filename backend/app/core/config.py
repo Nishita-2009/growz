@@ -14,11 +14,27 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = "growz_password"
     POSTGRES_DB: str = "growz_db"
 
+    DATABASE_URL: Optional[str] = None
     USE_SQLITE: bool = False
     SQLITE_DB_FILE: str = "growz.db"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
+        if self.DATABASE_URL:
+            import urllib.parse
+            db_url = self.DATABASE_URL.strip()
+            if db_url.startswith("postgresql://") or db_url.startswith("postgresql+psycopg2://"):
+                scheme = "postgresql+psycopg2://"
+                prefix = "postgresql://" if db_url.startswith("postgresql://") else "postgresql+psycopg2://"
+                body = db_url[len(prefix):]
+                if "@" in body:
+                    userpass, hostdb = body.rsplit("@", 1)
+                    if ":" in userpass:
+                        user, raw_pass = userpass.split(":", 1)
+                        encoded_pass = urllib.parse.quote(raw_pass, safe="")
+                        return f"{scheme}{user}:{encoded_pass}@{hostdb}"
+                return f"{scheme}{body}"
+            return db_url
         if self.USE_SQLITE:
             return f"sqlite:///{self.SQLITE_DB_FILE}"
         return f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
@@ -39,7 +55,7 @@ class Settings(BaseSettings):
 
     # AI Settings (Google Gemini)
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-1.5-pro"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
 
     model_config = SettingsConfigDict(
         env_file=".env",
