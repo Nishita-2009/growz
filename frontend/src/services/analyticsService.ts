@@ -68,6 +68,32 @@ export interface BusinessAnalytics {
 }
 
 
+import { useAuthStore } from '../stores/useAuthStore';
+
+function getServiceHeaders(businessId?: string): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  const authState = useAuthStore.getState();
+
+  if (authState.isDemoMode) {
+    headers['X-Business-ID'] = 'demo-business-id';
+    return headers;
+  }
+
+  if (authState.token) {
+    headers['Authorization'] = `Bearer ${authState.token}`;
+  }
+
+  const activeId = businessId || authState.userProfile?.organizations?.[0]?.id;
+  if (activeId) {
+    headers['X-Business-ID'] = activeId;
+  }
+
+  return headers;
+}
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 export const analyticsService = {
@@ -75,12 +101,7 @@ export const analyticsService = {
    * Fetches deterministic business analytics calculated from PostgreSQL database.
    */
   async getBusinessAnalytics(businessId?: string): Promise<BusinessAnalytics> {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    if (businessId) {
-      headers['X-Business-ID'] = businessId;
-    }
+    const headers = getServiceHeaders(businessId);
 
     const endpoint = BASE_URL.includes('/api/v1')
       ? `${BASE_URL}/analytics/overview`

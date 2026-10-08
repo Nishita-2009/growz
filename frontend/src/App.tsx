@@ -3,10 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './stores/useAuthStore';
 import { useBusinessProfileStore } from './stores/useBusinessProfileStore';
 import { LandingPage } from './pages/LandingPage';
+import { LoginPage } from './pages/LoginPage';
 import { AppShell } from './pages/AppShell';
 import { BusinessOnboarding } from './components/onboarding/BusinessOnboarding';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { AuthModal } from './components/AuthModal';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App: React.FC = () => {
@@ -21,10 +21,11 @@ export const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route
         path="/app/*"
         element={
-          <ProtectedRoute fallback={<AuthModal />}>
+          <ProtectedRoute>
             {!isCompleted ? <BusinessOnboarding /> : <AppShell />}
           </ProtectedRoute>
         }

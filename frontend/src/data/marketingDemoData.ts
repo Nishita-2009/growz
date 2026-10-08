@@ -14,97 +14,97 @@ export const MARKETING_KPIS_DEMO: MarketingKpi[] = [
   {
     id: 'kpi_spend',
     title: 'Total Marketing Spend',
-    value: '$3,450',
+    value: '₹26,500',
     change: '-8.2%',
-    isPositive: true, // lowered spend with high conversion is positive
+    isPositive: true,
     indicator: 'vs. previous 30 days',
     iconName: 'DollarSign'
   },
   {
     id: 'kpi_leads',
-    title: 'Leads Generated',
+    title: 'Leads & Inquiries Generated',
     value: '482',
     change: '+18.4%',
     isPositive: true,
-    indicator: 'qualified inquiries & signups',
+    indicator: 'WhatsApp chats & website visits',
     iconName: 'Users'
   },
   {
     id: 'kpi_customers',
-    title: 'Customers Acquired',
-    value: '68',
+    title: 'New Diners Acquired',
+    value: '184',
     change: '+14.2%',
     isPositive: true,
-    indicator: 'first-time purchasers',
+    indicator: 'first-time Cafe & delivery orders',
     iconName: 'UserCheck'
   },
   {
     id: 'kpi_cac',
     title: 'Customer Acquisition Cost',
-    value: '$50.73',
-    change: '-$12.40',
-    isPositive: true, // lower CAC is good
+    value: '₹144.00',
+    change: '-₹24.00',
+    isPositive: true,
     indicator: 'blended CAC across channels',
     iconName: 'Target'
   },
   {
     id: 'kpi_roi',
-    title: 'Marketing ROI',
-    value: '3.8x',
-    change: '+0.5x',
+    title: 'Marketing ROAS',
+    value: '18.3x',
+    change: '+2.5x',
     isPositive: true,
-    indicator: 'revenue generated per $1 spent',
+    indicator: 'revenue generated per ₹1 spent',
     iconName: 'TrendingUp'
   },
   {
     id: 'kpi_conversion',
     title: 'Conversion Rate',
-    value: '14.1%',
-    change: '+2.1%',
+    value: '38.2%',
+    change: '+4.1%',
     isPositive: true,
-    indicator: 'lead to customer conversion',
+    indicator: 'inquiry to order conversion',
     iconName: 'Zap'
   }
 ];
 
 export const MARKETING_HEALTH_DEMO: MarketingHealthScore = {
-  overallScore: 78,
-  statusText: 'Strong Acquisition Efficiency',
-  explanation: 'Your Marketing Health score is 78/100. Google Business and WhatsApp drive high-intent leads with top conversion rates (18.5%). However, Instagram engagement has a 72% drop-off before reaching the lead stage, signaling an acquisition bottleneck.',
+  overallScore: 84,
+  statusText: 'High ROI Local Acquisition',
+  explanation: 'Nish Cafe Marketing Health score is 84/100. Google Local Maps and WhatsApp Direct generate high-intent cafe visits and orders (ROAS 32x-40x). Swiggy/Zomato promos drive volume but compress margins due to 22% platform fees.',
   factors: [
     {
       name: 'Channel Performance',
-      score: 17,
+      score: 18,
       maxScore: 20,
-      description: 'Multi-channel coverage across social, search, and direct messaging.',
+      description: 'Multi-channel coverage across Instagram Reels, Google Maps, WhatsApp, and delivery apps.',
       status: 'good'
     },
     {
       name: 'Customer Acquisition',
-      score: 16,
+      score: 17,
       maxScore: 20,
-      description: '68 new customers acquired at a healthy $50.73 blended CAC.',
+      description: '184 new cafe diners acquired at an efficient ₹144 blended CAC.',
       status: 'good'
     },
     {
       name: 'Conversion',
-      score: 14,
+      score: 16,
       maxScore: 20,
-      description: 'High lead-to-customer conversion (14.1%), but high top-funnel drop-off.',
-      status: 'warning'
+      description: 'High WhatsApp & phone reservation conversion rate (38.2%).',
+      status: 'good'
     },
     {
       name: 'Digital Presence',
-      score: 15,
+      score: 17,
       maxScore: 20,
-      description: 'Google Business and Website active; Facebook needs profile sync.',
+      description: 'Google Business 4.8★ profile active; Instagram reels reaching 24k local foodies.',
       status: 'good'
     },
     {
       name: 'Marketing Efficiency',
       score: 16,
       maxScore: 20,
-      description: 'Strong 3.8x aggregate ROI with modest paid advertising budget.',
+      description: 'Outstanding 18.3x aggregate ROAS with low monthly ad budget.',
       status: 'good'
     }
   ]

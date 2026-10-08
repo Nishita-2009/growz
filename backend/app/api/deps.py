@@ -77,6 +77,7 @@ def get_current_user(
 
 
 DEFAULT_DEV_BUSINESS_NAME = "Development Active Business"
+DEMO_BUSINESS_NAME = "Nish Cafe"
 
 
 def get_current_business(
@@ -84,18 +85,23 @@ def get_current_business(
     x_business_id: Optional[str] = Header(None, alias="X-Business-ID")
 ) -> Business:
     """
-    DEVELOPMENT ACTIVE BUSINESS SELECTION MECHANISM:
+    BUSINESS SELECTION MECHANISM:
 
-    1. If `X-Business-ID` header is passed, attempts to find the matching `Business` record.
-    2. If no header is provided or during dev testing, fetches the default development `Business` record or creates one.
-
-    FUTURE COMPATIBILITY:
-    This dependency cleanly isolates business context and can easily be upgraded to resolve
-    `current_user.business` once Firebase tenant auth is wired up.
+    1. If `X-Business-ID` is 'demo' / 'demo-business-id', resolves/seeds 'Nish Cafe' demo dataset.
+    2. If `X-Business-ID` is a valid UUID, resolves the matching `Business` record.
+    3. Fallback: resolves/creates default development business context.
     """
     import uuid
 
     if x_business_id:
+        if x_business_id in ["demo-business-id", "demo-user", "demo", "demo-user-id", "Nish Cafe"]:
+            stmt = select(Business).where(Business.name == DEMO_BUSINESS_NAME)
+            demo_biz = db.execute(stmt).scalars().first()
+            if not demo_biz:
+                from app.db.seed_demo import seed_demo_business
+                demo_biz = seed_demo_business(db)
+            return demo_biz
+
         try:
             b_uuid = uuid.UUID(x_business_id)
             stmt = select(Business).where(Business.id == b_uuid)
@@ -105,12 +111,13 @@ def get_current_business(
         except ValueError:
             pass
 
-    # Dev fallback: find or create default development business
+    # Dev/Test fallback: find or create default development business
     stmt = select(Business).where(Business.name == DEFAULT_DEV_BUSINESS_NAME)
     business = db.execute(stmt).scalars().first()
 
     if not business:
         business = Business(
+            id=uuid.uuid4(),
             name=DEFAULT_DEV_BUSINESS_NAME,
             business_type="Retail & MSME Development"
         )

@@ -1,12 +1,9 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/useAuthStore';
+import { AuthModal } from '../components/AuthModal';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+export const LoginPage: React.FC = () => {
   const { firebaseUser, userProfile, isDemoMode, loading } = useAuthStore();
 
   if (loading) {
@@ -20,13 +17,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (isDemoMode) {
-    return <>{children}</>;
+  if (isDemoMode || (firebaseUser && userProfile)) {
+    return <Navigate to="/app" replace />;
   }
 
-  if (!firebaseUser || !userProfile) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
+  return <AuthModal />;
 };

@@ -13,7 +13,8 @@ export const useIntelligence = (businessId?: string) => {
       const data = await intelligenceService.getIntelligenceOverview(businessId);
       setIntelligence(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to connect to Growz Intelligence Engine.');
+      console.error('Intelligence Service Error:', err);
+      setError('Unable to load your business data. Please try again.');
     } finally {
       setLoading(false);
     }

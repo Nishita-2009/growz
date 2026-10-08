@@ -20,7 +20,8 @@ export function useAnalytics(businessId?: string): UseAnalyticsReturn {
       const data = await analyticsService.getBusinessAnalytics(businessId);
       setAnalytics(data);
     } catch (err: any) {
-      setError(err?.message || 'Unable to connect to Growz analytics engine.');
+      console.error('Analytics Service Error:', err);
+      setError('Unable to load your business data. Please try again.');
     } finally {
       setLoading(false);
     }

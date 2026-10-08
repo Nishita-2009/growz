@@ -11,9 +11,7 @@ export const LandingPage: React.FC = () => {
       <nav className="border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-indigo-400 flex items-center justify-center shadow-lg shadow-primary/20">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
+            <img src="/growz-logo.png" alt="Growz Logo" className="w-9 h-9 object-contain rounded-xl shadow-md shadow-emerald-500/20" />
             <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
               Growz
             </span>
@@ -24,10 +22,16 @@ export const LandingPage: React.FC = () => {
 
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/login')}
+              className="px-4 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => navigate('/login')}
               className="px-4 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary/90 text-white transition-all shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/30 flex items-center space-x-2"
             >
-              <span>Launch Growz App</span>
+              <span>Get Started</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -57,10 +61,10 @@ export const LandingPage: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/login')}
               className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-base transition-all shadow-xl shadow-primary/30 hover:scale-[1.02] flex items-center justify-center space-x-2"
             >
-              <span>Explore Application</span>
+              <span>Get Started</span>
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>

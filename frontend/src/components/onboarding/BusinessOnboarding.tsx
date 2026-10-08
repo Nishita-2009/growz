@@ -176,9 +176,7 @@ export const BusinessOnboarding: React.FC = () => {
       <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-lg shadow-md shadow-emerald-500/20">
-              G
-            </div>
+            <img src="/growz-logo.png" alt="Growz Logo" className="h-9 w-9 object-contain rounded-xl shadow-md shadow-emerald-500/20" />
             <span className="font-bold text-white tracking-wide">Growz Onboarding</span>
           </div>
 

@@ -35,7 +35,7 @@ export const CUSTOMER_KPIS_DEMO: CustomerKpi[] = [
     value: '642',
     change: '+15.2%',
     isPositive: true,
-    indicator: 'active repeat buyers',
+    indicator: 'active repeat diners & regulars',
     iconName: 'UserCheck'
   },
   {
@@ -50,8 +50,8 @@ export const CUSTOMER_KPIS_DEMO: CustomerKpi[] = [
   {
     id: 'avg_customer_value',
     title: 'Average Customer Value',
-    value: '$485.50',
-    change: '+$34.20',
+    value: '₹4,850',
+    change: '+₹340',
     isPositive: true,
     indicator: 'LTV lifetime estimate',
     iconName: 'DollarSign'
@@ -68,37 +68,37 @@ export const CUSTOMER_KPIS_DEMO: CustomerKpi[] = [
 ];
 
 export const CUSTOMER_HEALTH_DEMO: CustomerHealthScore = {
-  overallScore: 76,
-  statusText: 'Healthy Customer Dynamics',
-  explanation: 'Your customer health score is 76/100, driven by a strong repeat purchase rate (44.9%) and high average customer value ($485.50). Retention rates are climbing, though 24 regular buyers show signs of churn risk.',
+  overallScore: 82,
+  statusText: 'Healthy Cafe Dynamics',
+  explanation: 'Nish Cafe exhibits a high repeat diner rate (44.9%) with steady weekday office traffic and strong weekend family brunch visits.',
   factors: [
     {
       name: 'Customer Growth',
-      score: 18,
+      score: 20,
       maxScore: 25,
-      description: 'Acquisition velocity is steady with 184 new signups this month.',
+      description: 'Acquisition velocity is steady with 184 new customers this month.',
       status: 'good'
     },
     {
       name: 'Customer Retention',
-      score: 20,
+      score: 21,
       maxScore: 25,
-      description: '68% of 90-day buyers return within 45 days.',
+      description: '68% of 90-day diners return within 30 days.',
       status: 'good'
     },
     {
       name: 'Repeat Purchases',
-      score: 21,
+      score: 22,
       maxScore: 25,
-      description: 'Repeat customer rate of 44.9% exceeds retail benchmarks.',
+      description: 'Repeat customer rate of 44.9% exceeds restaurant benchmarks.',
       status: 'good'
     },
     {
       name: 'Customer Value',
-      score: 17,
+      score: 19,
       maxScore: 25,
-      description: 'Average Order Value is $84.20, with top 10% contributing 42% revenue.',
-      status: 'warning'
+      description: 'Average Order Value is ₹420, with top 10% contributing 38% revenue.',
+      status: 'good'
     }
   ]
 };
@@ -109,160 +109,160 @@ export const CUSTOMER_SEGMENTS_DEMO: CustomerSegmentItem[] = [
     name: 'New',
     count: 184,
     percentage: 12.9,
-    avgValue: 145.00,
+    avgValue: 350.00,
     color: '#38bdf8', // sky-400
-    description: 'First purchase within the last 30 days'
+    description: 'First order within the last 30 days'
   },
   {
     id: 'seg_returning',
     name: 'Returning',
     count: 642,
     percentage: 44.9,
-    avgValue: 420.50,
+    avgValue: 850.00,
     color: '#10b981', // emerald-500
-    description: '2-4 purchases in customer lifetime'
+    description: '2-4 visits in customer lifetime'
   },
   {
     id: 'seg_loyal',
-    name: 'High Value', // mapped to Loyal/High-Value segment display
+    name: 'High Value',
     count: 215,
     percentage: 15.1,
-    avgValue: 1250.00,
+    avgValue: 4850.00,
     color: '#8b5cf6', // violet-500
-    description: '5+ purchases with total spend > $1,000'
+    description: '5+ visits with total spend > ₹4,000'
   },
   {
     id: 'seg_at_risk',
     name: 'At Risk',
     count: 24,
     percentage: 1.7,
-    avgValue: 680.00,
+    avgValue: 1200.00,
     color: '#f59e0b', // amber-500
-    description: 'Overdue for regular purchase cycle'
+    description: 'No visit in past 45+ days'
   },
   {
     id: 'seg_inactive',
     name: 'Inactive',
     count: 363,
     percentage: 25.4,
-    avgValue: 95.00,
+    avgValue: 320.00,
     color: '#64748b', // slate-500
-    description: 'No purchase activity in past 180+ days'
+    description: 'No visit in past 180+ days'
   }
 ];
 
 export const CUSTOMERS_LIST_DEMO: CustomerListItem[] = [
   {
     id: 'cust_101',
-    name: 'Eleanor Vance',
-    email: 'eleanor.vance@example.com',
-    phone: '+1 (555) 234-5678',
-    location: 'Austin, TX',
-    orders: 14,
-    totalSpent: 1840.50,
+    name: 'Rahul Sharma',
+    email: 'rahul.sharma@hitec-tech.com',
+    phone: '+91 98765 43210',
+    location: 'HITEC City, Hyderabad',
+    orders: 28,
+    totalSpent: 14200.00,
     lastPurchase: '2 days ago',
-    avgOrderValue: 131.46,
+    avgOrderValue: 507.14,
     segment: 'High Value',
     status: 'Loyal',
     avatarColor: 'bg-violet-500/20 text-violet-400 border-violet-500/40'
   },
   {
     id: 'cust_102',
-    name: 'Marcus Sterling',
-    email: 'marcus.s@sterlingcorp.com',
-    phone: '+1 (555) 876-5432',
-    location: 'Seattle, WA',
-    orders: 9,
-    totalSpent: 1420.00,
-    lastPurchase: '5 days ago',
-    avgOrderValue: 157.77,
+    name: 'Ananya Reddy',
+    email: 'ananya.reddy@jubileedesigns.in',
+    phone: '+91 98123 45678',
+    location: 'Jubilee Hills, Hyderabad',
+    orders: 19,
+    totalSpent: 9800.00,
+    lastPurchase: '3 days ago',
+    avgOrderValue: 515.78,
     segment: 'High Value',
     status: 'Loyal',
     avatarColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
   },
   {
     id: 'cust_103',
-    name: 'Sophia Chen',
-    email: 'sophia.chen@designlab.io',
-    phone: '+1 (555) 345-6789',
-    location: 'San Francisco, CA',
-    orders: 6,
-    totalSpent: 780.25,
-    lastPurchase: '12 days ago',
-    avgOrderValue: 130.04,
-    segment: 'Returning',
-    status: 'Active',
+    name: 'Vikram Varma',
+    email: 'vikram@hydstartups.io',
+    phone: '+91 97012 34567',
+    location: 'Madhapur, Hyderabad',
+    orders: 34,
+    totalSpent: 16500.00,
+    lastPurchase: '1 day ago',
+    avgOrderValue: 485.29,
+    segment: 'High Value',
+    status: 'Loyal',
     avatarColor: 'bg-teal-500/20 text-teal-400 border-teal-500/40'
   },
   {
     id: 'cust_104',
-    name: 'David Miller',
-    email: 'd.miller@techlink.net',
-    phone: '+1 (555) 901-2345',
-    location: 'Chicago, IL',
-    orders: 8,
-    totalSpent: 960.00,
-    lastPurchase: '62 days ago',
-    avgOrderValue: 120.00,
+    name: 'Priya Rao',
+    email: 'priya.rao@infodev.com',
+    phone: '+91 96543 21098',
+    location: 'Gachibowli, Hyderabad',
+    orders: 6,
+    totalSpent: 4800.00,
+    lastPurchase: '48 days ago',
+    avgOrderValue: 800.00,
     segment: 'At Risk',
     status: 'At Risk',
     avatarColor: 'bg-amber-500/20 text-amber-400 border-amber-500/40'
   },
   {
     id: 'cust_105',
-    name: 'Aaliyah Patel',
-    email: 'aaliyah.p@apexsolutions.com',
-    phone: '+1 (555) 432-1098',
-    location: 'New York, NY',
-    orders: 1,
-    totalSpent: 185.00,
+    name: 'Sai Teja',
+    email: 'saiteja@banjarahills.in',
+    phone: '+91 95432 10987',
+    location: 'Banjara Hills, Hyderabad',
+    orders: 2,
+    totalSpent: 850.00,
     lastPurchase: '4 days ago',
-    avgOrderValue: 185.00,
+    avgOrderValue: 425.00,
     segment: 'New',
     status: 'Active',
     avatarColor: 'bg-sky-500/20 text-sky-400 border-sky-500/40'
   },
   {
     id: 'cust_106',
-    name: 'Robert Thorne',
-    email: 'r.thorne@globalcraft.org',
-    phone: '+1 (555) 654-3210',
-    location: 'Denver, CO',
-    orders: 11,
-    totalSpent: 1650.00,
-    lastPurchase: '75 days ago',
-    avgOrderValue: 150.00,
-    segment: 'At Risk',
-    status: 'At Risk',
+    name: 'Sneha Kulkarni',
+    email: 'sneha.k@kondapurdev.in',
+    phone: '+91 94321 09876',
+    location: 'Kondapur, Hyderabad',
+    orders: 22,
+    totalSpent: 12400.00,
+    lastPurchase: '5 days ago',
+    avgOrderValue: 563.63,
+    segment: 'High Value',
+    status: 'Loyal',
     avatarColor: 'bg-rose-500/20 text-rose-400 border-rose-500/40'
   },
   {
     id: 'cust_107',
-    name: 'Clara Hayes',
-    email: 'clara.h@lumina.co',
-    phone: '+1 (555) 789-0123',
-    location: 'Boston, MA',
-    orders: 4,
-    totalSpent: 410.00,
-    lastPurchase: '18 days ago',
-    avgOrderValue: 102.50,
-    segment: 'Returning',
-    status: 'Active',
+    name: 'Arjun Mehta',
+    email: 'arjun.mehta@fin-district.com',
+    phone: '+91 93210 98765',
+    location: 'Financial District, Hyderabad',
+    orders: 18,
+    totalSpent: 11200.00,
+    lastPurchase: '6 days ago',
+    avgOrderValue: 622.22,
+    segment: 'High Value',
+    status: 'Loyal',
     avatarColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/40'
   },
   {
     id: 'cust_108',
-    name: 'Julian Ross',
-    email: 'j.ross@nexusmedia.com',
-    phone: '+1 (555) 210-9876',
-    location: 'Miami, FL',
-    orders: 2,
-    totalSpent: 120.00,
-    lastPurchase: '210 days ago',
-    avgOrderValue: 60.00,
-    segment: 'Inactive',
-    status: 'Inactive',
-    avatarColor: 'bg-slate-500/20 text-slate-400 border-slate-500/40'
+    name: 'Kavya Nambiar',
+    email: 'kavya@hiteccity.io',
+    phone: '+91 92109 87654',
+    location: 'HITEC City, Hyderabad',
+    orders: 11,
+    totalSpent: 6500.00,
+    lastPurchase: '14 days ago',
+    avgOrderValue: 590.90,
+    segment: 'Returning',
+    status: 'Active',
+    avatarColor: 'bg-teal-500/20 text-teal-400 border-teal-500/40'
   }
 ];
 
