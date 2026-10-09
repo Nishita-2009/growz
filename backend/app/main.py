@@ -11,10 +11,13 @@ app = FastAPI(
 )
 
 # CORS Middleware configuration
+origins = settings.ALLOWED_HOSTS
+allow_credentials = "*" not in origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173", "*"],
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -32,3 +35,9 @@ app.include_router(ai.router, prefix="/api/ai", tags=["AI Advisor"])
 @app.get("/")
 def root_redirect():
     return {"message": "Welcome to Growz API. Access health check at /api/v1/health and docs at /api/v1/docs"}
+
+
+@app.get("/health")
+def root_health():
+    return {"status": "ok", "service": "growz-api"}
+

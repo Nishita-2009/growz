@@ -15,7 +15,12 @@ export const authService = {
    * Fetch authenticated user details from FastAPI backend
    */
   async getMe(idToken: string): Promise<UserProfile> {
-    const response = await fetch(`${API_BASE_URL}/me`, {
+    const cleanBase = API_BASE_URL.replace(/\/+$/, '');
+    const endpoint = cleanBase.endsWith('/api/v1')
+      ? `${cleanBase}/me`
+      : `${cleanBase}/api/v1/me`;
+
+    const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

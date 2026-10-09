@@ -103,9 +103,10 @@ export const analyticsService = {
   async getBusinessAnalytics(businessId?: string): Promise<BusinessAnalytics> {
     const headers = getServiceHeaders(businessId);
 
-    const endpoint = BASE_URL.includes('/api/v1')
-      ? `${BASE_URL}/analytics/overview`
-      : `${BASE_URL}/api/analytics/overview`;
+    const cleanBase = BASE_URL.replace(/\/+$/, '');
+    const endpoint = cleanBase.endsWith('/api/v1')
+      ? `${cleanBase}/analytics/overview`
+      : `${cleanBase}/api/v1/analytics/overview`;
 
     const response = await fetch(endpoint, {
       method: 'GET',

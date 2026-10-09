@@ -27,6 +27,7 @@ def init_firebase():
         options["storageBucket"] = settings.FIREBASE_STORAGE_BUCKET
 
     cred_path = settings.FIREBASE_CREDENTIALS_PATH or os.getenv("FIREBASE_CREDENTIALS_PATH") or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    json_cred = settings.FIREBASE_SERVICE_ACCOUNT_JSON or os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON") or os.getenv("FIREBASE_CREDENTIALS_JSON")
 
     if cred_path:
         if not os.path.exists(cred_path):
@@ -37,6 +38,12 @@ def init_firebase():
         cred = credentials.Certificate(cred_path)
         _firebase_app = firebase_admin.initialize_app(cred, options=options)
         logger.info(f"Firebase Admin initialized using service account file '{cred_path}' for project '{project_id}'.")
+    elif json_cred:
+        import json
+        cert_dict = json.loads(json_cred)
+        cred = credentials.Certificate(cert_dict)
+        _firebase_app = firebase_admin.initialize_app(cred, options=options)
+        logger.info(f"Firebase Admin initialized using service account JSON environment variable for project '{project_id}'.")
     elif settings.FIREBASE_PRIVATE_KEY and settings.FIREBASE_CLIENT_EMAIL:
         cred = credentials.Certificate({
             "type": "service_account",
@@ -49,8 +56,8 @@ def init_firebase():
     else:
         raise FileNotFoundError(
             "Firebase Service Account JSON credential is missing! "
-            "To verify real Firebase authentication tokens in FastAPI, set FIREBASE_CREDENTIALS_PATH "
-            "in backend/.env pointing to your service account JSON file (e.g. FIREBASE_CREDENTIALS_PATH='service-account.json')."
+            "To verify real Firebase authentication tokens in FastAPI, set FIREBASE_CREDENTIALS_PATH, "
+            "FIREBASE_SERVICE_ACCOUNT_JSON, or FIREBASE_PRIVATE_KEY and FIREBASE_CLIENT_EMAIL in environment variables."
         )
 
     return _firebase_app

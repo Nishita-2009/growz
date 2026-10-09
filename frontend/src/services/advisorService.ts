@@ -1,6 +1,6 @@
 import { useAuthStore } from '../stores/useAuthStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 function getServiceHeaders(businessId?: string): Record<string, string> {
   const headers: Record<string, string> = {
@@ -43,9 +43,10 @@ export const advisorService = {
   async askAdvisor(question: string, businessId?: string): Promise<AdvisorResponse> {
     const headers = getServiceHeaders(businessId);
 
-    const endpoint = API_BASE_URL.includes('/api/v1')
-      ? `${API_BASE_URL}/ai/advisor`
-      : `${API_BASE_URL}/api/ai/advisor`;
+    const cleanBase = API_BASE_URL.replace(/\/+$/, '');
+    const endpoint = cleanBase.endsWith('/api/v1')
+      ? `${cleanBase}/ai/advisor`
+      : `${cleanBase}/api/v1/ai/advisor`;
 
     try {
       const response = await fetch(endpoint, {

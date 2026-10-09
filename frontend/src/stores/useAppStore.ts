@@ -19,7 +19,13 @@ export const useAppStore = create<AppState>((set) => ({
   fetchHealth: async () => {
     set({ isLoadingHealth: true, healthError: null });
     try {
-      const response = await fetch('/api/v1/health');
+      const rawBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+      const cleanBase = rawBase.replace(/\/+$/, '');
+      const healthUrl = cleanBase.endsWith('/api/v1')
+        ? `${cleanBase}/health`
+        : `${cleanBase}/api/v1/health`;
+
+      const response = await fetch(healthUrl);
       if (!response.ok) {
         throw new Error(`Health check failed with status: ${response.status}`);
       }

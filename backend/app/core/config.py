@@ -7,6 +7,15 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
+    # CORS Settings
+    CORS_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173"
+
+    @property
+    def ALLOWED_HOSTS(self) -> list[str]:
+        if isinstance(self.CORS_ORIGINS, str):
+            return [host.strip() for host in self.CORS_ORIGINS.split(",") if host.strip()]
+        return ["*"]
+
     # Database Settings
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
@@ -23,6 +32,9 @@ class Settings(BaseSettings):
         if self.DATABASE_URL:
             import urllib.parse
             db_url = self.DATABASE_URL.strip()
+            if db_url.startswith("postgres://"):
+                db_url = "postgresql://" + db_url[len("postgres://"):]
+
             if db_url.startswith("postgresql://") or db_url.startswith("postgresql+psycopg2://"):
                 scheme = "postgresql+psycopg2://"
                 prefix = "postgresql://" if db_url.startswith("postgresql://") else "postgresql+psycopg2://"
@@ -39,9 +51,6 @@ class Settings(BaseSettings):
             return f"sqlite:///{self.SQLITE_DB_FILE}"
         return f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
-
-
-
     # Redis Settings
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
@@ -49,6 +58,7 @@ class Settings(BaseSettings):
     # Firebase Authentication & Storage Settings
     FIREBASE_PROJECT_ID: Optional[str] = None
     FIREBASE_CREDENTIALS_PATH: Optional[str] = None
+    FIREBASE_SERVICE_ACCOUNT_JSON: Optional[str] = None
     FIREBASE_PRIVATE_KEY: Optional[str] = None
     FIREBASE_CLIENT_EMAIL: Optional[str] = None
     FIREBASE_STORAGE_BUCKET: Optional[str] = None

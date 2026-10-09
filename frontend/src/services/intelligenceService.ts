@@ -70,9 +70,10 @@ export const intelligenceService = {
   async getIntelligenceOverview(businessId?: string): Promise<IntelligenceOverview> {
     const headers = getServiceHeaders(businessId);
 
-    const endpoint = BASE_URL.includes('/api/v1')
-      ? `${BASE_URL}/intelligence/overview`
-      : `${BASE_URL}/api/intelligence/overview`;
+    const cleanBase = BASE_URL.replace(/\/+$/, '');
+    const endpoint = cleanBase.endsWith('/api/v1')
+      ? `${cleanBase}/intelligence/overview`
+      : `${cleanBase}/api/v1/intelligence/overview`;
 
     const response = await fetch(endpoint, {
       method: 'GET',
